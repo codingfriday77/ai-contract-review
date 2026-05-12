@@ -68,7 +68,7 @@ ai-contract-review/
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/your-username/ai-contract-review.git
+git clone https://github.com/codingfriday77/ai-contract-review.git
 cd ai-contract-review
 ```
 
