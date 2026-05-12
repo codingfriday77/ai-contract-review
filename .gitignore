@@ -1,0 +1,33 @@
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Backend
+Backend/__pycache__/
+Backend/.venv/
+Backend/uploads/
+Backend/*.pyc
+Backend/dist/
+Backend/.pytest_cache/
+
+# Frontend
+Frontend/node_modules/
+Frontend/dist/
+Frontend/.vite/
+Frontend/.DS_Store
+Frontend/*.log
+Frontend/npm-debug.log*
+Frontend/yarn-debug.log*
+Frontend/yarn-error.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
