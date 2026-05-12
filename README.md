@@ -1,100 +1,122 @@
-# AI Contract Review Application
+# AI Contract Review
 
-A full-stack application for AI-powered contract analysis using React frontend and Python Flask backend.
+An AI-powered full-stack web app that analyzes PDF contracts under Indian law using GPT-4 and returns a structured, clause-by-clause risk report — instantly.
+
+Upload any freelance agreement, employment contract, vendor agreement, real estate document, or startup legal document and get a focused risk breakdown in seconds.
+
+---
+
+## Features
+
+- 🔴 **Clause-by-clause risk ratings** — red / yellow / green per clause
+- 📋 **Plain-English explanations** — what each clause actually means
+- ⚠️ **Missing clause detection** — flags absent IP, dispute resolution, payment terms, etc.
+- 🇮🇳 **Indian law notes** — cites relevant acts (Contract Act, IT Act, etc.) where applicable
+- ✍️ **Suggested rewrites** — fairer wording for high-risk clauses
+- 📊 **Overall risk score** — Low / Moderate / High with downloadable JSON report
+- 📱 **Responsive UI** — works on desktop and mobile
+
+---
+
+## Tech Stack
+
+| Layer    | Technology                                      |
+|----------|-------------------------------------------------|
+| Frontend | React 18, Vite, Tailwind CSS, Axios             |
+| Backend  | FastAPI, pdfplumber, Python 3.8+, uvicorn       |
+| AI       | OpenAI GPT-4 via openai Python SDK              |
+
+---
 
 ## Project Structure
 
 ```
-Ai contract review/
+ai-contract-review/
 ├── Backend/
-│   ├── app.py                 # Flask API server
-│   ├── utils.py               # OpenAI integration utilities
-│   ├── requirements.txt        # Python dependencies
-│   ├── upload_pdf/            # Sample PDFs for testing
-│   └── uploads/               # Temporary upload directory (created at runtime)
+│   ├── __init__.py
+│   ├── app.py              # FastAPI server and API endpoints
+│   ├── utils.py            # OpenAI client and GPT-4 prompt logic
+│   └── requirements.txt    # Python dependencies
 ├── Frontend/
 │   ├── src/
 │   │   ├── components/
-│   │   │   ├── ContractUpload.jsx    # File upload component
-│   │   │   └── ContractReview.jsx    # Review display component
-│   │   ├── App.jsx             # Main app component
-│   │   ├── main.jsx            # Entry point
-│   │   └── index.css           # Tailwind CSS imports
-│   ├── index.html              # HTML template
-│   ├── package.json            # npm dependencies
-│   ├── vite.config.js          # Vite configuration
-│   ├── tailwind.config.js      # Tailwind CSS configuration
-│   └── postcss.config.js       # PostCSS configuration
-└── .env                        # Environment variables (create this)
+│   │   │   ├── ContractUpload.jsx   # Drag-and-drop PDF upload
+│   │   │   └── ContractReview.jsx   # Risk report display
+│   │   ├── App.jsx
+│   │   ├── main.jsx
+│   │   └── index.css
+│   ├── index.html
+│   ├── package.json
+│   ├── vite.config.js
+│   ├── tailwind.config.js
+│   └── postcss.config.js
+└── .env                    # Environment variables (create this)
 ```
+
+---
 
 ## Prerequisites
 
 - Python 3.8+
 - Node.js 16+ and npm
-- OpenAI API key
+- OpenAI API key with GPT-4 access
 
-## Setup Instructions
+---
 
-### 1. Backend Setup
+## Setup & Quick Start
+
+### 1. Clone the repo
 
 ```bash
-# Navigate to Backend directory
+git clone https://github.com/your-username/ai-contract-review.git
+cd ai-contract-review
+```
+
+### 2. Create your `.env` file
+
+In the project root:
+
+```bash
+echo "OPENAI_API_KEY=sk-your-api-key-here" > .env
+```
+
+### 3. Backend setup
+
+```bash
 cd Backend
-
-# Install Python dependencies
 pip install -r requirements.txt
-
-# Create .env file in the project root
-# Add your OpenAI API key:
-echo "OPENAI_API_KEY=your_key_here" > ../.env
 ```
 
-### 2. Frontend Setup
+Start the backend server:
 
 ```bash
-# Navigate to Frontend directory
+cd Backend
+uvicorn app:app --reload --host localhost --port 5000
+```
+
+The API will be available at `http://localhost:5000`
+Interactive docs at `http://localhost:5000/docs`
+
+### 4. Frontend setup
+
+Open a new terminal:
+
+```bash
 cd Frontend
-
-# Install npm dependencies
 npm install
-
-# Build Tailwind CSS
-npm run build  # (optional, for production)
-```
-
-## Running the Application
-
-### Start Backend Server
-
-```bash
-# From Backend directory
-python app.py
-
-# Server will run at http://localhost:5000
-```
-
-The Flask app will:
-- Listen on `http://localhost:5000`
-- Provide `/api/review` endpoint for contract uploads
-- Provide `/api/health` endpoint for health checks
-
-### Start Frontend Development Server
-
-```bash
-# From Frontend directory
 npm run dev
-
-# Development server will run at http://localhost:5173
-# The app will automatically proxy /api calls to http://localhost:5000
 ```
+
+The app will be available at `http://localhost:5173`
+All `/api` calls are automatically proxied to `http://localhost:5000`
+
+---
 
 ## API Endpoints
 
-### POST /api/review
-Upload a PDF contract for analysis
+### `POST /api/review`
+Upload a PDF contract for analysis.
 
-**Request:**
 ```bash
 curl -X POST http://localhost:5000/api/review \
   -F "file=@contract.pdf"
@@ -103,16 +125,15 @@ curl -X POST http://localhost:5000/api/review \
 **Response:**
 ```json
 {
-  "review": "AI-generated contract analysis...",
+  "review": "{...structured JSON analysis...}",
   "filename": "contract.pdf",
   "status": "success"
 }
 ```
 
-### GET /api/health
-Health check endpoint
+### `GET /api/health`
+Health check.
 
-**Response:**
 ```json
 {
   "status": "ok",
@@ -120,86 +141,64 @@ Health check endpoint
 }
 ```
 
-### GET /
-API info endpoint
-
-## Features
-
-- **PDF Upload**: Drag-and-drop or browse file upload
-- **AI Analysis**: Uses OpenAI to analyze contract terms, risks, and key points
-- **Beautiful UI**: Built with React and Tailwind CSS
-- **Real-time Processing**: Shows loading state while analyzing
-- **Download Results**: Export analysis as text file
-- **Error Handling**: Comprehensive error messages for failed uploads
-- **Responsive Design**: Works on desktop and mobile
+---
 
 ## Environment Variables
 
-Create a `.env` file in the project root:
+| Variable         | Description                        |
+|------------------|------------------------------------|
+| `OPENAI_API_KEY` | Your OpenAI API key (GPT-4 access) |
 
-```env
-OPENAI_API_KEY=sk-your-api-key-here
-```
+---
 
 ## Troubleshooting
 
-### "No text found in PDF" error
-- The PDF might be a scanned image. Currently, only text-based PDFs are supported
-- Consider using OCR software to convert scanned PDFs to text-based
+**"No text found in PDF"**
+The PDF is likely scanned or image-based. Only text-based PDFs are supported. Use OCR software to convert before uploading.
 
-### CORS errors
-- Ensure backend is running on `localhost:5000`
-- The frontend proxy in `vite.config.js` should redirect `/api` requests correctly
+**OpenAI API errors**
+- Confirm `OPENAI_API_KEY` is set correctly in `.env`
+- Confirm your key has GPT-4 access (not just GPT-3.5)
+- Check remaining API credits
 
-### File upload fails
-- Check file size (ensure it's not too large)
-- Verify file is actually a PDF
-- Check backend `uploads` directory has write permissions
+**CORS errors**
+- Confirm the backend is running on port 5000
+- The Vite proxy in `vite.config.js` handles `/api` routing automatically
 
-### OpenAI API errors
-- Verify `OPENAI_API_KEY` is set correctly in `.env`
-- Check API key has sufficient credits
-- Verify model name in `Backend/utils.py` is available
+**Port already in use**
+```bash
+# Use a different port
+uvicorn app:app --reload --host localhost --port 8000
+# Then update vite.config.js target to http://localhost:8000
+```
 
-## Development
-
-### Frontend Changes
-- Modify components in `Frontend/src/components/`
-- Changes will hot-reload in development mode
-
-### Backend Changes
-- Modify `Backend/app.py` or `Backend/utils.py`
-- Restart Flask server to apply changes
-
-### Styling
-- Use Tailwind CSS classes in components
-- Reference: https://tailwindcss.com/docs
+---
 
 ## Production Deployment
 
 ### Backend
+
 ```bash
-# Use gunicorn for production
 pip install gunicorn
-gunicorn -w 4 -b 0.0.0.0:5000 Backend.app:app
+gunicorn -w 4 -k uvicorn.workers.UvicornWorker Backend.app:app --bind 0.0.0.0:5000
 ```
 
 ### Frontend
-```bash
-# Build for production
-npm run build
 
-# Deploy dist/ folder to your hosting service
+```bash
+cd Frontend
+npm run build
+# Deploy the dist/ folder to Vercel, Netlify, or any static host
 ```
+
+---
+
+## Disclaimer
+
+This tool is for review assistance only. The output is AI-generated and should not be treated as legal advice. Always consult a qualified legal professional before signing any contract.
+
+---
 
 ## License
 
-This project is licensed under the MIT License.
-
-## Support
-
-For issues or questions, please check:
-1. Backend is running on port 5000
-2. Frontend is running on port 5173
-3. `.env` file has valid OpenAI API key
-4. All dependencies are installed
+MIT License
